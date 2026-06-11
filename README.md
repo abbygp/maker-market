@@ -66,7 +66,7 @@ In **Workers & Pages → your project → Settings → Build**:
 |---------|--------|
 | Build command | `npm run build:cf` |
 | Deploy command | `npx wrangler deploy` |
-| Node.js version | 22 (recommended) |
+| Node.js version | **22** (or use the `.node-version` file) |
 
 ### Required environment variables
 
