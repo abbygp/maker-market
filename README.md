@@ -30,7 +30,7 @@ cp .env.example .env.local
 ### 3. Set up Mapbox (optional — location autocomplete)
 
 1. Create a free token at [mapbox.com](https://account.mapbox.com/access-tokens/)
-2. Add `MAPBOX_ACCESS_TOKEN` to `.env.local`
+2. Add `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` to `.env.local`
 
 Without this, the location filter falls back to venues already listed on MakerMarket.
 
@@ -41,6 +41,42 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+## Deploy to Cloudflare Workers
+
+This app uses **Next.js server features** (middleware, API routes, Supabase auth). It cannot be deployed with a plain `next build` on Cloudflare Pages — use the **OpenNext Cloudflare** adapter instead.
+
+### Build locally
+
+```bash
+npm run build:cf
+```
+
+### Deploy from CLI
+
+```bash
+npm run deploy:cf
+```
+
+### Deploy via Cloudflare dashboard (GitHub)
+
+In **Workers & Pages → your project → Settings → Build**:
+
+| Setting | Value |
+|---------|--------|
+| Build command | `npm run build:cf` |
+| Deploy command | `npx wrangler deploy` |
+| Node.js version | 22 (recommended) |
+
+### Required environment variables
+
+Set these in **Workers & Pages → Settings → Variables and Secrets**:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` (optional, for location autocomplete)
+
+Without Supabase vars, the app loads but login and data won't work.
 
 ## Features
 
