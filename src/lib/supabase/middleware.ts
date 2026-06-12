@@ -35,8 +35,21 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
+  const authCode = request.nextUrl.searchParams.get("code");
+
+  if (authCode && !pathname.startsWith("/auth/callback")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/callback";
+    if (!url.searchParams.has("next")) {
+      url.searchParams.set("next", "/onboarding");
+    }
+    return NextResponse.redirect(url);
+  }
+
   const isAuthRoute =
-    pathname.startsWith("/login") || pathname.startsWith("/signup");
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/auth/callback");
   const isOnboarding = pathname.startsWith("/onboarding");
   const isProtected =
     pathname.startsWith("/dashboard") ||

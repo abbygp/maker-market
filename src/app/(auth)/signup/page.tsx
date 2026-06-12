@@ -21,16 +21,21 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setEmailSent(false);
 
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signUp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+      },
     });
 
     if (authError) {
@@ -39,8 +44,14 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/onboarding");
-    router.refresh();
+    if (data.session) {
+      router.push("/onboarding");
+      router.refresh();
+      return;
+    }
+
+    setEmailSent(true);
+    setLoading(false);
   }
 
   return (
@@ -79,7 +90,13 @@ export default function SignupPage() {
             {error && (
               <p className="text-sm text-red-600">{error}</p>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            {emailSent && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                Check your email for a confirmation link. After you confirm,
+                you&apos;ll be signed in and can finish setting up your profile.
+              </div>
+            )}
+            <Button type="submit" className="w-full" disabled={loading || emailSent}>
               {loading ? "Creating account..." : "Create account"}
             </Button>
           </form>
