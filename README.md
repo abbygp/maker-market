@@ -60,13 +60,31 @@ npm run deploy:cf
 
 ### Deploy via Cloudflare dashboard (GitHub)
 
-In **Workers & Pages → your project → Settings → Build**:
+In **Workers & Pages → your project → Settings → Build**, use **one** of these setups:
+
+**Option A (recommended — build once)**
 
 | Setting | Value |
 |---------|--------|
 | Build command | `npm run build:cf` |
 | Deploy command | `npx wrangler deploy` |
+| Non-production branch deploy command | `npx opennextjs-cloudflare upload` |
 | Node.js version | **22** (or use the `.node-version` file) |
+
+**Option B (works with default `npm run build`)**
+
+| Setting | Value |
+|---------|--------|
+| Build command | `npm run build` |
+| Deploy command | `npm run deploy` |
+| Non-production branch deploy command | `npm run upload` |
+| Node.js version | **22** |
+
+If deploy is `npx wrangler deploy` but build is only `npm run build`, deploy fails with:
+
+`Could not find compiled Open Next config, did you run the build command?`
+
+That happens because `next build` alone does not produce the `.open-next/` bundle Wrangler needs.
 
 ### Required environment variables
 
