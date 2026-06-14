@@ -46,6 +46,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 This app uses **Next.js server features** (middleware, API routes, Supabase auth). It cannot be deployed with a plain `next build` on Cloudflare Pages — use the **OpenNext Cloudflare** adapter instead.
 
+The default `npm run build` script runs Next.js **and** produces the `.open-next/` bundle Wrangler needs, so Cloudflare's default build + deploy settings work out of the box.
+
 ### Build locally
 
 ```bash

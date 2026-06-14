@@ -7,12 +7,12 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:cf": "opennextjs-cloudflare build",
-    "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "deploy:cf": "npm run deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "build": "next build && opennextjs-cloudflare build --skipNextBuild",
+    "build:cf": "npm run build",
+    "preview:cf": "npm run build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare deploy",
+    "deploy:cf": "npm run build && npm run deploy",
+    "upload": "npm run build && opennextjs-cloudflare upload",
     "start": "next start",
     "lint": "eslint"
   },
