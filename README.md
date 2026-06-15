@@ -90,13 +90,29 @@ That happens because `next build` alone does not produce the `.open-next/` bundl
 
 ### Required environment variables
 
-Set these in **Workers & Pages → Settings → Variables and Secrets**:
+Cloudflare does **not** use your local `.env.local`. Add these in **both** places below, then trigger a new deploy.
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` (optional, for location autocomplete)
+#### 1. Runtime (required for the live site)
 
-Without Supabase vars, the app loads but login and data won't work.
+**Workers & Pages → maker-market → Settings → Variables and Secrets**
+
+| Variable | Example |
+|----------|---------|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your publishable/anon key |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | optional, for location autocomplete |
+
+Use **Encrypt** for keys if you prefer, though `NEXT_PUBLIC_*` values are exposed to the browser anyway.
+
+#### 2. Build-time (required so the build can embed public vars)
+
+**Workers & Pages → maker-market → Settings → Build → Build variables and secrets**
+
+Add the same three variables here as well.
+
+Without runtime vars, server components cannot reach Supabase. Without build vars, the production bundle may ship without your public keys inlined.
+
+After saving, redeploy from the **Deployments** tab (or push a commit).
 
 ## Features
 

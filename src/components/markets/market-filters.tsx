@@ -169,8 +169,14 @@ export function MarketFilters({
           </p>
           {!supabaseConfigured && (
             <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              Supabase is not configured yet. Copy <code className="text-xs">.env.example</code> to{" "}
-              <code className="text-xs">.env.local</code> and add your project keys to load markets.
+              Supabase is not configured yet. For local dev, copy{" "}
+              <code className="text-xs">.env.example</code> to{" "}
+              <code className="text-xs">.env.local</code>. On Cloudflare, add{" "}
+              <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+              <code className="text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in{" "}
+              <strong>Settings → Variables and Secrets</strong> and{" "}
+              <strong>Settings → Build → Build variables and secrets</strong>,
+              then redeploy.
             </p>
           )}
           <p className="mt-4 text-sm text-stone-400">
