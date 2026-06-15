@@ -72,16 +72,22 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
       return;
     }
 
-    router.push(`/makers/${profile.id}`);
+    router.push("/profile");
     router.refresh();
   }
 
   return (
     <Card className="border-stone-200/80 shadow-sm">
       <CardHeader>
-        <CardTitle>Edit your maker resume</CardTitle>
+        <CardTitle>
+          {profile.role === "vendor"
+            ? "Edit your maker resume"
+            : "Edit your organizer profile"}
+        </CardTitle>
         <CardDescription>
-          This profile is submitted when you apply to a market. Keep it polished.
+          {profile.role === "vendor"
+            ? "This profile is submitted when you apply to a market. Keep it polished."
+            : "This is how makers will recognize your markets and organization."}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -150,19 +156,22 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="portfolio">Portfolio image URLs</Label>
-            <Textarea
-              id="portfolio"
-              rows={5}
-              value={portfolioInput}
-              onChange={(e) => setPortfolioInput(e.target.value)}
-              placeholder="One image URL per line"
-            />
-            <p className="text-xs text-stone-500">
-              Paste public image URLs (one per line). Supabase Storage URLs work great.
-            </p>
-          </div>
+          {profile.role === "vendor" && (
+            <div className="space-y-2">
+              <Label htmlFor="portfolio">Portfolio image URLs</Label>
+              <Textarea
+                id="portfolio"
+                rows={5}
+                value={portfolioInput}
+                onChange={(e) => setPortfolioInput(e.target.value)}
+                placeholder="One image URL per line"
+              />
+              <p className="text-xs text-stone-500">
+                Paste public image URLs (one per line). Supabase Storage URLs work
+                great.
+              </p>
+            </div>
+          )}
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -173,7 +182,7 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push(`/makers/${profile.id}`)}
+              onClick={() => router.push("/profile")}
             >
               Preview
             </Button>

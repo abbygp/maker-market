@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { Button } from "@/components/ui/button";
@@ -39,15 +40,13 @@ export async function SiteHeader() {
             <Link href="/markets">Markets</Link>
           </Button>
 
-          {user && profile?.role === "vendor" && (
-            <>
-              <Button variant="ghost" asChild>
-                <Link href={`/makers/${user.id}`}>My Resume</Link>
-              </Button>
-              <Button variant="ghost" asChild>
-                <Link href="/profile/edit">Edit Profile</Link>
-              </Button>
-            </>
+          {user && profile && (
+            <Button variant="ghost" asChild>
+              <Link href="/profile" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Profile
+              </Link>
+            </Button>
           )}
 
           {user && profile?.role === "organizer" && (
