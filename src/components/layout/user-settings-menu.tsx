@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LogOut, Settings, Trash2, User } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,7 +32,17 @@ export function UserSettingsMenu({
   businessName,
   canDeleteAccount,
 }: UserSettingsMenuProps) {
+  const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <>
@@ -63,15 +75,15 @@ export function UserSettingsMenu({
               </Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild>
-            <button
-              type="submit"
-              form="sign-out-form"
-              className="flex w-full items-center gap-2 text-left text-sm text-stone-800"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign out
-            </button>
+          <DropdownMenuItem
+            disabled={signingOut}
+            onSelect={(event) => {
+              event.preventDefault();
+              void handleSignOut();
+            }}
+          >
+            <LogOut className="h-4 w-4" />
+            {signingOut ? "Signing out..." : "Sign out"}
           </DropdownMenuItem>
           {canDeleteAccount && (
             <>
@@ -88,7 +100,6 @@ export function UserSettingsMenu({
               </DropdownMenuItem>
             </>
           )}
-          <form id="sign-out-form" action="/auth/signout" method="post" hidden />
         </DropdownMenuContent>
       </DropdownMenu>
 

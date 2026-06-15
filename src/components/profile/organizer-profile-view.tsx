@@ -3,6 +3,7 @@ import { AtSign, Globe, ExternalLink, Pencil, Store } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getMarketCoverPhoto } from "@/components/markets/market-photos-gallery";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import type { Market, Profile } from "@/types/database";
 
@@ -62,7 +63,10 @@ export function OrganizerProfileView({
 
           {markets.length > 0 ? (
             <div className="mt-6 grid gap-4">
-              {markets.map((market) => (
+              {markets.map((market) => {
+                const coverPhoto = getMarketCoverPhoto(market);
+
+                return (
                 <Link
                   key={market.id}
                   href={
@@ -71,7 +75,17 @@ export function OrganizerProfileView({
                       : `/markets/${market.id}`
                   }
                 >
-                  <Card className="border-stone-200/80 transition hover:border-stone-300 hover:shadow-md">
+                  <Card className="overflow-hidden border-stone-200/80 transition hover:border-stone-300 hover:shadow-md">
+                    {coverPhoto && (
+                      <div className="aspect-[16/9] overflow-hidden border-b border-stone-200/80 bg-stone-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={coverPhoto}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
                     <CardHeader className="flex flex-row items-start justify-between gap-4">
                       <div>
                         <CardTitle className="text-xl">{market.title}</CardTitle>
@@ -96,7 +110,8 @@ export function OrganizerProfileView({
                     )}
                   </Card>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="mt-6 rounded-xl border border-dashed border-stone-200 bg-white/60 px-6 py-16 text-center">

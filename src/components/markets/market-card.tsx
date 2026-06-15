@@ -2,14 +2,27 @@ import Link from "next/link";
 import { MapPin, Calendar, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getMarketCoverPhoto } from "@/components/markets/market-photos-gallery";
 import { formatCategory } from "@/lib/constants";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Market } from "@/types/database";
 
 export function MarketCard({ market }: { market: Market }) {
+  const coverPhoto = getMarketCoverPhoto(market);
+
   return (
     <Link href={`/markets/${market.id}`} className="group block">
-      <Card className="h-full border-stone-200/80 transition hover:border-stone-300 hover:shadow-md">
+      <Card className="h-full overflow-hidden border-stone-200/80 transition hover:border-stone-300 hover:shadow-md">
+        {coverPhoto && (
+          <div className="aspect-[16/9] overflow-hidden border-b border-stone-200/80 bg-stone-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={coverPhoto}
+              alt=""
+              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            />
+          </div>
+        )}
         <CardHeader className="space-y-4 pb-4">
           <div className="flex items-start justify-between gap-4">
             <CardTitle className="text-xl leading-snug group-hover:text-amber-900">

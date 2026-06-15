@@ -40,6 +40,7 @@ export interface Market {
   application_deadline: string | null;
   categories_needed: string[];
   status: MarketStatus;
+  photos: string[];
   created_at: string;
 }
 

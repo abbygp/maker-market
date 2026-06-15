@@ -20,7 +20,9 @@ npm install
 ### 2. Set up Supabase
 
 1. Create a project at [supabase.com](https://supabase.com)
-2. Run the migration in `supabase/migrations/001_initial_schema.sql` via the SQL Editor
+2. Run the migrations in `supabase/migrations/` via the SQL Editor (in order):
+   - `001_initial_schema.sql`
+   - `002_market_photos.sql`
 3. Copy `.env.example` to `.env.local` and fill in your keys:
 
 ```bash

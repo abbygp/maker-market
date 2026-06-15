@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ApplyButton } from "@/components/markets/apply-button";
+import { MarketPhotosGallery } from "@/components/markets/market-photos-gallery";
 import { formatCategory } from "@/lib/constants";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Market } from "@/types/database";
@@ -75,6 +76,8 @@ export default async function MarketDetailPage({
           </div>
           <Badge variant="accent">{typedMarket.status}</Badge>
         </div>
+
+        <MarketPhotosGallery photos={typedMarket.photos} className="mt-8" />
 
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="flex items-center gap-3 text-stone-700">

@@ -23,6 +23,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CRAFT_CATEGORIES } from "@/lib/constants";
+import { uploadMarketPhotos } from "@/lib/supabase/upload-market-photo";
+import { MarketPhotosInput } from "@/components/markets/market-photos-input";
 import type { MarketStatus } from "@/types/database";
 
 export function CreateMarketForm() {
@@ -31,6 +33,8 @@ export function CreateMarketForm() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [status, setStatus] = useState<MarketStatus>("open");
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [pendingPhotoFiles, setPendingPhotoFiles] = useState<File[]>([]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -50,25 +54,65 @@ export function CreateMarketForm() {
       return;
     }
 
-    const { error: insertError } = await supabase.from("markets").insert({
-      organizer_id: user.id,
-      title: form.get("title") as string,
-      description: (form.get("description") as string) || null,
-      date: form.get("date") as string,
-      location_name: form.get("location_name") as string,
-      address: (form.get("address") as string) || null,
-      booth_fee: form.get("booth_fee")
-        ? Number(form.get("booth_fee"))
-        : null,
-      application_deadline: (form.get("application_deadline") as string) || null,
-      categories_needed: selectedCategories,
-      status,
-    });
+    const { data: market, error: insertError } = await supabase
+      .from("markets")
+      .insert({
+        organizer_id: user.id,
+        title: form.get("title") as string,
+        description: (form.get("description") as string) || null,
+        date: form.get("date") as string,
+        location_name: form.get("location_name") as string,
+        address: (form.get("address") as string) || null,
+        booth_fee: form.get("booth_fee")
+          ? Number(form.get("booth_fee"))
+          : null,
+        application_deadline:
+          (form.get("application_deadline") as string) || null,
+        categories_needed: selectedCategories,
+        status,
+        photos: photoUrls,
+      })
+      .select("id")
+      .single();
 
-    if (insertError) {
-      setError(insertError.message);
+    if (insertError || !market) {
+      setError(insertError?.message ?? "Could not create market.");
       setLoading(false);
       return;
+    }
+
+    if (pendingPhotoFiles.length > 0) {
+      const uploadedUrls = await uploadMarketPhotos(
+        supabase,
+        user.id,
+        market.id,
+        pendingPhotoFiles
+      );
+
+      if (uploadedUrls.length > 0) {
+        const { error: updateError } = await supabase
+          .from("markets")
+          .update({ photos: [...photoUrls, ...uploadedUrls] })
+          .eq("id", market.id);
+
+        if (updateError) {
+          setError(
+            "Market created, but some photos failed to save. You can add them later."
+          );
+          setLoading(false);
+          router.push("/dashboard");
+          router.refresh();
+          return;
+        }
+      } else if (photoUrls.length === 0) {
+        setError(
+          "Market created, but photo uploads failed. Check that the market-photos storage bucket exists in Supabase."
+        );
+        setLoading(false);
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
     }
 
     router.push("/dashboard");
@@ -153,6 +197,13 @@ export function CreateMarketForm() {
               </Select>
             </div>
           </div>
+
+          <MarketPhotosInput
+            photoUrls={photoUrls}
+            onPhotoUrlsChange={setPhotoUrls}
+            pendingFiles={pendingPhotoFiles}
+            onPendingFilesChange={setPendingPhotoFiles}
+          />
 
           <div className="space-y-2">
             <Label>Categories needed</Label>
