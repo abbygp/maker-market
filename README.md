@@ -101,8 +101,9 @@ Cloudflare does **not** use your local `.env.local`. Add these in **both** place
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your publishable/anon key |
 | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | optional, for location autocomplete |
+| `SUPABASE_SECRET_KEY` | server-only secret key (required for **Delete account**) |
 
-Use **Encrypt** for keys if you prefer, though `NEXT_PUBLIC_*` values are exposed to the browser anyway.
+Use **Encrypt** for keys if you prefer, though `NEXT_PUBLIC_*` values are exposed to the browser anyway. Never add `SUPABASE_SECRET_KEY` to build variables — runtime only.
 
 #### 2. Build-time (required so the build can embed public vars)
 

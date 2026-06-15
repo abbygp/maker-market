@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { isAccountDeletionConfigured } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { Button } from "@/components/ui/button";
+import { UserSettingsMenu } from "@/components/layout/user-settings-menu";
 
 export async function SiteHeader() {
   let user = null;
@@ -40,15 +41,6 @@ export async function SiteHeader() {
             <Link href="/markets">Markets</Link>
           </Button>
 
-          {user && profile && (
-            <Button variant="ghost" asChild>
-              <Link href="/profile" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Profile
-              </Link>
-            </Button>
-          )}
-
           {user && profile?.role === "organizer" && (
             <Button variant="ghost" asChild>
               <Link href="/dashboard">Dashboard</Link>
@@ -65,11 +57,11 @@ export async function SiteHeader() {
               </Button>
             </>
           ) : (
-            <form action="/auth/signout" method="post">
-              <Button variant="outline" type="submit">
-                Sign out
-              </Button>
-            </form>
+            <UserSettingsMenu
+              hasProfile={Boolean(profile)}
+              businessName={profile?.business_name}
+              canDeleteAccount={isAccountDeletionConfigured()}
+            />
           )}
         </nav>
       </div>
