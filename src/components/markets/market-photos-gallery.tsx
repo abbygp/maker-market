@@ -11,7 +11,9 @@ export function MarketPhotosGallery({
   title,
   className = "",
 }: MarketPhotosGalleryProps) {
-  if (photos.length === 0) return null;
+  const safePhotos = photos ?? [];
+
+  if (safePhotos.length === 0) return null;
 
   return (
     <section className={className}>
@@ -19,7 +21,7 @@ export function MarketPhotosGallery({
         {title ?? "Photos"}
       </p>
       <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
-        {photos.map((url, index) => (
+        {safePhotos.map((url, index) => (
           <div
             key={`${url}-${index}`}
             className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-stone-200/80 bg-stone-100 shadow-sm"
@@ -37,6 +39,8 @@ export function MarketPhotosGallery({
   );
 }
 
-export function getMarketCoverPhoto(market: Pick<Market, "photos">): string | null {
-  return market.photos[0] ?? null;
+export function getMarketCoverPhoto(
+  market: Pick<Market, "photos"> | { photos?: string[] | null }
+): string | null {
+  return market.photos?.[0] ?? null;
 }

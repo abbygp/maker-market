@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Calendar, DollarSign, Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeMarket } from "@/lib/markets/normalize";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ApplyButton } from "@/components/markets/apply-button";
@@ -26,7 +27,7 @@ export default async function MarketDetailPage({
 
   if (!market) notFound();
 
-  const typedMarket = market as Market;
+  const typedMarket = normalizeMarket(market as Market);
 
   const {
     data: { user },

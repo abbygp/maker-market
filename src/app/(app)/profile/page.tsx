@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeMarkets } from "@/lib/markets/normalize";
 import { MakerProfileView } from "@/components/profile/maker-profile-view";
 import { OrganizerProfileView } from "@/components/profile/organizer-profile-view";
 import type { Market, Profile } from "@/types/database";
@@ -35,7 +36,7 @@ export default async function ProfilePage() {
   return (
     <OrganizerProfileView
       profile={typedProfile}
-      markets={(markets as Market[]) ?? []}
+      markets={normalizeMarkets(markets as Market[] | null)}
       isOwner
     />
   );

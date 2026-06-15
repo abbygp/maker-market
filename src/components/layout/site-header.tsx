@@ -10,17 +10,22 @@ export async function SiteHeader() {
   let profile = null;
 
   if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
+    try {
+      const supabase = await createClient();
+      const { data } = await supabase.auth.getUser();
+      user = data.user;
 
-    if (user) {
-      const { data: userProfile } = await supabase
-        .from("profiles")
-        .select("role, business_name")
-        .eq("id", user.id)
-        .maybeSingle();
-      profile = userProfile;
+      if (user) {
+        const { data: userProfile } = await supabase
+          .from("profiles")
+          .select("role, business_name")
+          .eq("id", user.id)
+          .maybeSingle();
+        profile = userProfile;
+      }
+    } catch {
+      user = null;
+      profile = null;
     }
   }
 

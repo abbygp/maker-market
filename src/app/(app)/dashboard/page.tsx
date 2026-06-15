@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeMarkets } from "@/lib/markets/normalize";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +31,7 @@ export default async function DashboardPage() {
     .eq("organizer_id", user.id)
     .order("date", { ascending: true });
 
-  const typedMarkets = (markets as Market[]) ?? [];
+  const typedMarkets = normalizeMarkets(markets as Market[] | null);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
